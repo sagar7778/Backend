@@ -16,7 +16,13 @@ export const register = async (req, res) => {
     user = new User({ name, email, password: hashedPassword });
     await user.save();
 
-    const payload = { user: { id: user.id } };
+    const payload = {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    };
     const token = jwt.sign(payload, "ghbnjmkmjnjbjnmk", {
       expiresIn: "1h",
     });
@@ -55,16 +61,24 @@ export const login = async (req, res) => {
 
 // Verify Token Middleware
 export const authMiddleware = (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token)
+  const authHeader = req.header("Authorization");
+
+  if (!authHeader) {
     return res.status(401).json({ msg: "No token, authorization denied" });
+  }
+
+  // Extract token (handle both 'Bearer token' and direct token cases)
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
 
   try {
-    const decoded = jwt.verify(token, "ghbnjmkmjnjbjnmk");
+    const decoded = jwt.verify(token, "ghbnjmkmjnjbjnmk"); // Ensure correct secret key
     req.user = decoded.user;
     next();
   } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
+    console.error("JWT Error:", err.message); // Log detailed error for debugging
+    return res.status(401).json({ msg: "Token is not valid" });
   }
 };
 

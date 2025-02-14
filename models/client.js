@@ -39,6 +39,10 @@ const clientSchema = new Schema({
     required: true,
     enum: ["male", "female"],
   },
+  age: {
+    type: Number,
+    required: true,
+  },
 });
 const Client = mongoose.model("client", clientSchema);
 export default Client;
