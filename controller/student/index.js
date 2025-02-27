@@ -66,10 +66,10 @@ const getStudent = async (req, res) => {
 };
 const getStudentById = async (req, res) => {
   try {
-    const student = await student.findById(req.params.id);
+    const Student = await student.findById(req.params.id);
     res.status(200).json({
       message: "Student fetched successfully",
-      data: student,
+      data: Student,
     });
   } catch (error) {
     res.status(500).json({
@@ -80,12 +80,12 @@ const getStudentById = async (req, res) => {
 };
 const updateStudent = async (req, res) => {
   try {
-    const student = await student.findByIdAndUpdate(req.params.id, req.body, {
+    const Student = await student.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
     res.status(200).json({
       message: "Student updated successfully",
-      data: student,
+      data: Student,
     });
   } catch (error) {
     res.status(500).json({
